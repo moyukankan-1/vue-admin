@@ -1,4 +1,4 @@
-const path = require('path')
+const {resolve} = require('path')
 
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? '' : '/',
@@ -21,7 +21,14 @@ module.exports = {
   // 调整内部的 webpack 配置。
   // 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/webpack.md
   chainWebpack: (config) => {},
-  configureWebpack: (config) => {},
+  configureWebpack: (config) => {
+    config.resolve = {
+      extensions: ['.js','vue','.json'],
+      alias: {
+        '@': resolve(__dirname,'./src')
+      }
+    }
+  },
 
   // CSS 相关选项
   css: {
@@ -52,6 +59,29 @@ module.exports = {
   // PWA 插件的选项。
   // 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli-plugin-pwa/README.md
   pwa: {},
+
+  devServe: {
+    open: false,
+    host: '0.0.0.0',
+    port: 8080,
+    https: false,
+    hot: true,
+    hotOnly: false,
+    proxy: {
+      '/api': {
+        target: 'http://www.web-jshtml.cn/productApi',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    },
+    overlay: {
+      warning: true,
+      errors: true
+    },
+    before: app => {}
+  },
 
   // 第三方插件的选项
   pluginOptions: {
