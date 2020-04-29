@@ -60,27 +60,28 @@ module.exports = {
   // 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli-plugin-pwa/README.md
   pwa: {},
 
-  devServe: {
-    open: false,
-    host: '0.0.0.0',
-    port: 8080,
-    https: false,
-    hot: true,
+  devServer: {
+    open: false, // 编译完成是否打开网页
+    host: '0.0.0.0', // 指定使用地址，默认localhost,0.0.0.0代表可以被外界访问
+    port: 8080, // 访问端口
+    https: false, // 编译失败时刷新页面
+    hot: true, // 开启热加载
     hotOnly: false,
     proxy: {
-      '/api': {
-        target: 'http://www.web-jshtml.cn/productApi',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
+      '/devApi': {
+          target: "http://www.web-jshtml.cn/productapi/token", //API服务器的地址  http://www.web-jshtml.cn/api
+          changeOrigin: true,
+          pathRewrite: {
+              '^/devApi': ''
+          }
       }
     },
-    overlay: {
-      warning: true,
+    overlay: { // 全屏模式下是否显示脚本错误
+      warnings: true,
       errors: true
     },
-    before: app => {}
+    before: app => {
+    }
   },
 
   // 第三方插件的选项

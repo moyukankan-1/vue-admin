@@ -7,14 +7,14 @@
         </li>
       </ul>
       <!--表单-->
-      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="login-form" size="medium">
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="loginForm" class="login-form" size="medium">
         <el-form-item prop="username" class="item-form">
           <label>邮箱</label>
           <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item prop="password" class="item-form">
           <label>密码</label>
-          <el-input type="text" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
         </el-form-item>
         <el-form-item prop="passwords" class="item-form" v-if="model === 'register'">
           <label>确认密码</label>
@@ -24,15 +24,15 @@
           <label>验证码</label>
           <el-row :gutter="10">
             <el-col :span="15">
-              <el-input v-model.number="ruleForm.code" minlength="6" maxlength="6"></el-input>
+              <el-input type="text" v-model="ruleForm.code" minlength="6" maxlength="6"></el-input>
             </el-col>
             <el-col :span="9">
-              <el-button type="success" class="block" @click="getSms()">获取验证码</el-button>
+              <el-button type="success" class="block" @click="getSms()" :disabled="codeButtonStatus">{{codeButtonText}}</el-button>
             </el-col>
           </el-row>
         </el-form-item>
         <el-form-item>
-          <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn block">登录</el-button>
+          <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block" :disabled="loginButtonStatus">{{model == "login"? '登录': '注册'}}</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -44,10 +44,10 @@ import { GetSms } from '@/api/login'
 import { reactive, ref, onMounted } from '@vue/composition-api'
 import {stripscript} from '@/utils/validate'
 export default {
-  setup(props,context) {
+  setup(props,{refs, root}) {
     //验证用户名
       let validateUsername = (rule, value, callback) => {
-        let reg = /^([a-zA-Z]|(0-9))(\w|\.)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
+        let reg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/
         if (value === '') {
           callback(new Error('请输入用户名!'))
         } else if(!reg.test(value)) {
@@ -102,16 +102,25 @@ export default {
         }
       }
     //这里放置data数据，生命周期，自定义函数
-    // context.attrs
-    // context.slots
-    // context.parent
-    // context.root
-    // context.emit
+    // context.attrs == this.$attrs
+    // context.emit == this.$emit
+    // context.listeners = this.$listeners
+    // context.parent == this.$parent
+    // context.refs = this.$refs
+    // context.root  == this
+  
 
     //遇到声明类型为对象类型的时候，用reactive
     const menuTab = reactive([{txt: "登录",current: true,type:'login'},{txt: "注册",current: false,type:'register'}])
     //遇到声明类型为基本类型的时候，用ref
     const model = ref('login')
+    //登录按钮禁用状态
+    const loginButtonStatus = ref(true)
+    //验证码按钮禁用状态
+    const codeButtonStatus = ref(false)
+    const codeButtonText = ref('获取验证码')
+    //倒计时时间
+    const timer = ref(null)
     //表单绑定数据
     const ruleForm = reactive({
       username: '',
@@ -151,18 +160,60 @@ export default {
       data.current = true
       //修改模块值
       model.value = data.type
+      //重置表单
+      refs.loginForm.resetFields()
     }) 
     /**
      * 获取验证码
      */
     const getSms = (() => {
-      GetSms()
+      //邮箱为空时，提示
+      if(ruleForm.username == '') {
+        root.$message.error('邮箱不能为空!')
+        return
+      }
+      let reg = /^\w+((.\w+)|(-\w+))@[A-Za-z0-9]+((.|-)[A-Za-z0-9]+).[A-Za-z0-9]+$/
+      if(!reg.test(ruleForm.username)) {
+        root.$message.error('邮箱格式有误，请重新输入!')
+        return
+      }
+
+      //修改获取验证按钮的状态
+      codeButtonStatus.value = true
+      codeButtonText.value = '已发送'
+      //请求接口
+      GetSms({username: ruleForm.username, module: model.value}).then(response => {
+        root.$message({
+          message: response.data.message,
+          type: 'success'
+        })
+        loginButtonStatus.value = false
+        countDown(60)
+      }).catch(error => {
+        console.log(error)
+      })
+    })
+    /*
+     * 倒计时 
+     */
+    const countDown = ((number) => {
+      let time = number
+      timer.value = setInterval(() => {
+        time--
+        if(time === 0) {
+          clearInterval(timer.value)
+          codeButtonStatus.value = false
+          codeButtonText.value = '再次获取'
+        }else {
+          codeButtonText.value = `倒计时${time}`
+        }
+      }, 1000);
     })
     /*
      *提交表单
     */
     const submitForm = (formName => {
-      context.refs[formName].validate((valid) => {
+      refs['formName'].validate((valid) => {
         if (valid) {
           alert('submit!');
         } else {
@@ -174,6 +225,9 @@ export default {
     return {
       menuTab,
       model,
+      loginButtonStatus,
+      codeButtonStatus,
+      codeButtonText,
       ruleForm,
       rules,
       toggleMenu,
