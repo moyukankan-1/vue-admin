@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { GetSms } from '@/api/login'
+import { GetSms, Register, Login } from '@/api/login'
 import { reactive, ref, onMounted } from '@vue/composition-api'
 import {stripscript} from '@/utils/validate'
 export default {
@@ -197,6 +197,10 @@ export default {
      * 倒计时 
      */
     const countDown = ((number) => {
+      // 判断定时器是否存在
+      if(timer.value) {
+        clearInterval(timer.value)
+      }
       let time = number
       timer.value = setInterval(() => {
         time--
@@ -209,19 +213,70 @@ export default {
         }
       }, 1000);
     })
+    /**
+     * 点击注册，清除倒计时
+     */
+    const clearCountDown = (() => {
+      codeButtonStatus.value = false
+      codeButtonText.value = '获取验证码'
+      clearInterval(timer.value)
+    })
     /*
      *提交表单
     */
     const submitForm = (formName => {
-      refs['formName'].validate((valid) => {
+      refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          if(model.value == 'login') {
+            login()
+          }else {
+            register()
+          }
         } else {
           console.log('error submit!!');
           return false;
         }
       })
     }) 
+    /**
+     * 登录接口
+     */
+    const login = (() => {
+      let data = {
+        username: ruleForm.username,
+        password: ruleForm.password,
+        code: ruleForm.code,
+      }
+      Login(data).then(response => {
+        root.$message({
+          message: response.data.message,
+          type: 'success'
+        })
+      }).catch(error => {
+
+      })
+    }) 
+    /**
+     * 注册接口
+     */
+    const register = (() => {
+      let data = {
+        username: ruleForm.username,
+        password: ruleForm.password,
+        code: ruleForm.code,
+        module: 'register'
+      }
+      Register(data).then(response => {
+        root.$message({
+          message: response.data.message,
+          type: 'success'
+        })
+        //注册成功
+        toggleMenu(menuTab[0])
+        clearCountDown()
+      }).catch(error => {
+      })
+    })
     return {
       menuTab,
       model,
