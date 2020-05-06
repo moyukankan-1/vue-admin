@@ -5,12 +5,18 @@ const BASEURL = process.env.NODE_ENV === 'production' ? '' : '/devApi';
 const service = axios.create({
     baseURL: BASEURL,  // http://192.120.0.106:8080/devApi/  == http://www.web-jshtml.cn/productapi/productapi
     timeout: 10000,   // 超时
-});
+})
 
 
 // 添加一个请求拦截器
 service.interceptors.request.use(function (config) {
   // Do something before request is sent
+
+  /**
+   * 添加请求头
+   */
+  config.headers['Tokey'] = '1111111'
+  
   return config;
 }, function (error) {
   // Do something with request error
@@ -34,7 +40,7 @@ service.interceptors.response.use(function (response) {
 }, function (error) {
   // 对响应错误做点什么
   return Promise.reject(error);
-});
+})
 
 
 export default service

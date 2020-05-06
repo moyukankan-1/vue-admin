@@ -1,0 +1,10 @@
+.el-submenu .el-menu-item {
+  &.is-active{
+    background: rgba(245,108,108,0.2) !important;
+  }
+}
+li.el-submenu {
+  &.is-active.is-opened .el-submenu__title {
+    background: #f56c6c !important;
+  }
+}

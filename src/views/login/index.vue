@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import sha1 from 'js-sha1'
 import { GetSms, Register, Login } from '@/api/login'
 import { reactive, ref, onMounted } from '@vue/composition-api'
 import {stripscript} from '@/utils/validate'
@@ -152,6 +153,7 @@ export default {
 
     /**
      * 声明函数
+     * 切换模块
      */
     const toggleMenu = (data => {
       menuTab.forEach(element => {
@@ -162,7 +164,15 @@ export default {
       model.value = data.type
       //重置表单
       refs.loginForm.resetFields()
+      clearCountDown()
     }) 
+    /**
+     * 更新按钮状态
+     */
+    const updataButtonStatus = ((params) => {
+      codeButtonStatus.value = params.status
+      codeButtonText.value  = params.text
+    })
     /**
      * 获取验证码
      */
@@ -179,8 +189,10 @@ export default {
       }
 
       //修改获取验证按钮的状态
-      codeButtonStatus.value = true
-      codeButtonText.value = '已发送'
+      updataButtonStatus({
+        status: true,
+        text: '已发送'
+      })
       //请求接口
       GetSms({username: ruleForm.username, module: model.value}).then(response => {
         root.$message({
@@ -206,8 +218,10 @@ export default {
         time--
         if(time === 0) {
           clearInterval(timer.value)
-          codeButtonStatus.value = false
-          codeButtonText.value = '再次获取'
+          updataButtonStatus({
+            status: false,
+            text: '再次获取'
+          })
         }else {
           codeButtonText.value = `倒计时${time}`
         }
@@ -217,8 +231,10 @@ export default {
      * 点击注册，清除倒计时
      */
     const clearCountDown = (() => {
-      codeButtonStatus.value = false
-      codeButtonText.value = '获取验证码'
+      updataButtonStatus({
+            status: false,
+            text: '获取验证码'
+          })
       clearInterval(timer.value)
     })
     /*
@@ -244,7 +260,7 @@ export default {
     const login = (() => {
       let data = {
         username: ruleForm.username,
-        password: ruleForm.password,
+        password: sha1(ruleForm.password),
         code: ruleForm.code,
       }
       Login(data).then(response => {
@@ -252,6 +268,7 @@ export default {
           message: response.data.message,
           type: 'success'
         })
+        root.$router.push('/backstage')
       }).catch(error => {
 
       })
@@ -262,7 +279,7 @@ export default {
     const register = (() => {
       let data = {
         username: ruleForm.username,
-        password: ruleForm.password,
+        password: sha1(ruleForm.password),
         code: ruleForm.code,
         module: 'register'
       }
