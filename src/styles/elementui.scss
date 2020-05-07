@@ -8,3 +8,25 @@ li.el-submenu {
     background: #f56c6c !important;
   }
 }
+
+.close {
+  .el-submenu {
+    &.is-opened {
+      > .el-submenu__title {
+        background: #f56c6c !important;
+      }
+    }
+    
+  }
+}
+.el-menu--vertical {
+  .el-menu {
+    background: #f56c6c !important;
+  }
+  .el-menu-item { 
+    line-height: 56px;
+  }
+  .el-menu-item:hover {
+    background: #f56c6c !important;
+  }
+}

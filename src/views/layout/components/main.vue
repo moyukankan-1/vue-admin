@@ -5,9 +5,8 @@
 </template>
 <script>
 export default {
-  data () {
-    return {
-    };
+  setup(props) {
+
   }
 }
 </script>
@@ -21,5 +20,17 @@ export default {
   bottom: 0;
   border: 30px solid #f7f7f7;
   border-bottom: none;
+  padding: 30px;
+  @include webkit(transition, all .5s);
+}
+.open {
+  #main-wrap {
+    left: $navMenu;
+  }
+}
+.close {
+  #main-wrap {
+    left: $navMenuMin;
+  }
 }
 </style>

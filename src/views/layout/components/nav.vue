@@ -4,7 +4,7 @@
       <template v-for="(item,index) in routers">
         <el-submenu v-if="item.hidden" :key="index" :index="index + ''">
           <template slot="title">
-            <i class="el-icon-location"></i>
+            <svg-icon :iconClass="item.meta.icon" :className="item.meta.icon"/>
             <span slot="title">{{item.meta.name}}</span>
           </template>
           <el-menu-item v-for="subItem in item.children" :key="subItem.id" :index="subItem.path">{{subItem.meta.name}}</el-menu-item>
@@ -14,10 +14,10 @@
   </div>
 </template>
 <script>
-import { reactive, ref, onMounted } from '@vue/composition-api'
+import { reactive, ref, onMounted, computed } from '@vue/composition-api'
 export default {
   setup(props, { root }) {
-    const isCollapse =  ref(false)
+    const isCollapse =  computed(() => root.$store.state.isCollapse)
     const routers = reactive(root.$router.options.routes)
     
     const handleOpen = (key, keyPath) => {
@@ -45,5 +45,20 @@ export default {
   width: $navMenu;
   height: 100vh;
   background: #344a5f;
+  @include webkit(transition, all .5s);
+  svg {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+}
+.open {
+  #nav-wrap {
+    width: $navMenu;
+  }
+}
+.close {
+  #nav-wrap {
+    width: 65px;
+  }
 }
 </style>

@@ -27,7 +27,8 @@ Vue.use(VueRouter)
       hidden: true,
       redirect: '/index',
       meta: {
-        name: '控制台'
+        name: '控制台',
+        icon: 'kzt'
       },
       children: [
         {
@@ -44,7 +45,8 @@ Vue.use(VueRouter)
       component: () => import('../views/layout/index.vue'),
       hidden: true,
       meta:{
-        name: '信息管理'
+        name: '信息管理',
+        icon: 'xxgl'
       },
       children: [
         {
@@ -68,7 +70,8 @@ Vue.use(VueRouter)
       component: () => import('../views/layout/index.vue'),
       hidden: true,
       meta:{
-        name: '用户管理'
+        name: '用户管理',
+        icon: 'yhgl'
       },
       children: [
         {

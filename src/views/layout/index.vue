@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="[menuStatus? 'close': 'open']">
     <layout-nav />
     <layout-header />
     <layout-main />
@@ -9,6 +9,7 @@
 import layoutHeader from './components/header.vue'
 import layoutMain from './components/main.vue'
 import layoutNav from './components/nav.vue'
+import { computed } from '@vue/composition-api'
 
 export default {
   components: {
@@ -16,8 +17,12 @@ export default {
     layoutMain,
     layoutNav
   },
-  setup() {
+  setup(props, { root }) {
+    const menuStatus = computed(() => root.$store.state.isCollapse)
 
+    return {
+      menuStatus
+    }
   }
 }
 </script>

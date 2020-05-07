@@ -20,7 +20,22 @@ module.exports = {
 
   // 调整内部的 webpack 配置。
   // 查阅 https://github.com/vuejs/vue-docs-zh-cn/blob/master/vue-cli/webpack.md
-  chainWebpack: (config) => {},
+  chainWebpack: (config) => {
+    config.module.rules.delete('svg') // 重点:删除默认配置中处理svg,
+    // const svgRule = config.module.rule('svg')
+    // svgRule.uses.clear()
+    config.module
+      .rule('svg-sprite-loader')
+      .test(/\.svg$/)
+      .include
+      .add(resolve('src/icons')) // 处理svg目录
+      .end()
+      .use('svg-sprite-loader')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+  },
   configureWebpack: (config) => {
     config.resolve = {
       extensions: ['.js','vue','.json'],
