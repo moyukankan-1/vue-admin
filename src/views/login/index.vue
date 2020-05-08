@@ -263,15 +263,13 @@ export default {
         password: sha1(ruleForm.password),
         code: ruleForm.code,
       }
-      Login(data).then(response => {
+      root.$store.dispatch('login', data).then(res => {
         root.$message({
-          message: response.data.message,
+          message: res.data.message,
           type: 'success'
         })
         root.$router.push('/backstage')
-      }).catch(error => {
-
-      })
+      }).catch(err => {})
     }) 
     /**
      * 注册接口

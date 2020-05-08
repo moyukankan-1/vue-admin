@@ -12,3 +12,15 @@ $layoutHeader: 75px;
   #{$type}: $value;
 }
 
+@mixin labelDom($align,$width,$line-height: "normal") {
+  label {
+    float: left;
+    line-height: $line-height + px;
+    width: $width + px;
+    text-align: $align;
+  }
+  .wrap-content {
+    margin-left: $width + px;
+  }
+}
+

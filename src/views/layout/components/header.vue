@@ -3,21 +3,23 @@
     <div class="pull-left header-icon" @click="navMenuState"><svg-icon iconClass="menu" className="menu"></svg-icon></div>
     <div class="pull-right">
       <div class="user-info">
-        管理员
+        {{username}}
       </div>
       <svg-icon class="header-icon" iconClass="out" className="out"></svg-icon>
     </div>
   </div>
 </template>
 <script>
-import { reactive, ref, onMounted } from '@vue/composition-api'
+import { reactive, ref, onMounted, computed } from '@vue/composition-api'
 export default {
   setup(props, { root }) {
+    const username = computed(() => root.$store.state.username)
     const navMenuState = () => {
       root.$store.commit('SET_COLLAPSE') 
     }
     return {
-      navMenuState
+      navMenuState,
+      username
     }
   }
 }
