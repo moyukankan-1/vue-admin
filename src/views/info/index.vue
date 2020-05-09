@@ -53,10 +53,10 @@
         <el-button type="danger" style="width: 100%;">搜索</el-button>
       </el-col>
       <el-col :span="2" class="pull-right">
-        <el-button type="danger" style="width: 100%;">新增</el-button>
+        <el-button type="danger" style="width: 100%;" @click="dialogInfo = true">新增</el-button>
       </el-col>
     </el-row>
-
+    <div style="height: 30px"></div>
     <!--表格-->
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column type="selection" width="55"></el-table-column>
@@ -66,17 +66,42 @@
       <el-table-column prop="user" label="管理员" width="115"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button type="danger" size="mini">删除</el-button>
-          <el-button type="success" size="mini">编辑</el-button>
+          <el-button type="danger" size="mini" @click="deleteItem">删除</el-button>
+          <el-button type="success" size="mini" @click="dialogInfo = true">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div style="height: 30px"></div>
+    <!--底部分页-->
+    <el-row>
+      <el-col :span="12">
+        <el-button @click="deleteAll">批量删除</el-button>
+      </el-col>
+      <el-col :span="12">
+        <el-pagination
+          class="pull-right"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          background
+          layout="total, sizes, prev, pager, next"
+          :page-sizes="[10, 20, 30, 40]"
+          :total="100">
+        </el-pagination>
+      </el-col>
+    </el-row>
+
+    <!--弹窗-->
+    <Dialog :flag.sync="dialogInfo"/>
   </div>
 </template>
 <script>
+import Dialog from '@/components/dialog/index.vue'
 import { ref, reactive } from '@vue/composition-api'
 export default {
-  setup(props) {
+  components: {
+    Dialog
+  },
+  setup(props,{ root }) {
         const options = reactive([{
           value: 1,
           label: '国际信息'
@@ -119,14 +144,64 @@ export default {
         const value2 = ref('')
         const search = ref('id')
         const search_input = ref('')
+        const dialogInfo = ref(false)
+
+        const handleSizeChange = (val) => {
+          console.log(val)
+        }
+        const handleCurrentChange = (val) => {
+          console.log(val)
+        }
+        const deleteItem = () => {
+          root.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            root.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }).catch(() => {
+            root.$message({
+              type: 'info',
+              message: '已取消删除'
+            })          
+          })
+        }
+        const deleteAll = () => {
+          root.$confirm('删除全部, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            root.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+          }).catch(() => {
+            root.$message({
+              type: 'info',
+              message: '已取消删除'
+            })          
+          })
+        }
+        // const close = () => {
+        //   dialogInfo.value = false
+        // }
         return {
+          handleSizeChange,
+          handleCurrentChange,
+          deleteItem,
+          deleteAll,
           options,
           searchOptions,
           tableData,
           value,
           value2,
           search,
-          search_input
+          search_input,
+          dialogInfo,
         }
   }
 }
