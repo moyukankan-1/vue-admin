@@ -10,6 +10,10 @@ import './router/premit'
 Vue.use(ElementUI)
 Vue.use(VueCompositionApi)
 
+//自定义全局方法
+import global from "@/utils/global"
+Vue.use(global)
+
 
 
 Vue.config.productionTip = false

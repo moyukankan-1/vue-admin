@@ -11,3 +11,7 @@ export function setToken(token) {
 export function setUsername(value) {
   return cookie.set('username',value)
 }
+
+export function getUsername() {
+  return cookie.get('username')
+}

@@ -153,42 +153,21 @@ export default {
           console.log(val)
         }
         const deleteItem = () => {
-          root.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            root.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-          }).catch(() => {
-            root.$message({
-              type: 'info',
-              message: '已取消删除'
-            })          
+         root.confirm({
+           content: '确认删除当前信息，确认后将无法恢复！',
+           type: '警告',
+           fn: confirmDelete
+         })
+        }
+        const deleteAll = () => { 
+          root.confirm({
+            content: '删除全部，是否继续？',
+            fn: confirmDelete
           })
         }
-        const deleteAll = () => {
-          root.$confirm('删除全部, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            root.$message({
-              type: 'success',
-              message: '删除成功!'
-            });
-          }).catch(() => {
-            root.$message({
-              type: 'info',
-              message: '已取消删除'
-            })          
-          })
+        const confirmDelete = () => {
+          console.log(11)
         }
-        // const close = () => {
-        //   dialogInfo.value = false
-        // }
         return {
           handleSizeChange,
           handleCurrentChange,
