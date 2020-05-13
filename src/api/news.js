@@ -39,3 +39,24 @@ export function EditCategory(data) {
     data
   })
 }
+
+/**
+ * 新增信息
+ */
+export function AddInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/add/",
+    data
+  })
+}
+/**
+ * 获取列表
+ */
+export function GetList(data) {
+  return service.request({
+    method: "post",
+    url: "/news/getList/",
+    data
+  })
+}

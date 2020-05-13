@@ -47,10 +47,13 @@
   </div>
 </template>
 <script>
-import { reactive, ref, onMounted } from '@vue/composition-api'
-import { AddFristCategory, GetCategory, DeleteCategory, EditCategory } from '@/api/news'
+import { reactive, ref, onMounted, watch } from '@vue/composition-api'
+import { AddFristCategory, DeleteCategory, EditCategory } from '@/api/news'
+import { common } from '@/api/common'
 export default {
   setup(props, { root, refs }) {
+    const { getInfoCategory, categoryItem} = common()
+
     const form = reactive({
       categoryName: '',
       secCategoryName: '',
@@ -140,13 +143,11 @@ export default {
       button_disabled.value = false
     }
     /**
-     * 获取分类
+     * 监听获取分类
      */
-    const getCategory = () => {
-      GetCategory({}).then(res => {
-        category.item = res.data.data.data
-      }).catch(err => {}) 
-    }
+    watch(() => categoryItem.item, (value) => {
+      category.item = value
+    })
     //删除按钮
     const deleteCategory = (categoryId) => {
       deleteId.value = categoryId
@@ -177,7 +178,7 @@ export default {
      * 挂载完成时执行,(页面dom元素完成时)
      */
     onMounted(() => {
-      getCategory()
+      getInfoCategory()
     })
 
     return {
