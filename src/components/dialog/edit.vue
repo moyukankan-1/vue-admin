@@ -1,17 +1,17 @@
 <template>
   <div>
-    <el-dialog title="新增" :visible.sync="dialogFlag" center :modal-append-to-body='false' @close="close" width="580px" @opened="openDialog">
+    <el-dialog title="修改" :visible.sync="dialogFlag" center :modal-append-to-body='false' @close="close" width="580px" @opened="openDialog">
       <el-form :model="form" ref="addInform">
         <el-form-item label="分类" :label-width="formLabelWidth">
-          <el-select v-model="form.category" placeholder="请选择活动区域">
+          <el-select v-model="form.item.category" placeholder="请选择活动区域">
             <el-option v-for="item in categoryOption.item" :key="item.id" :label="item.category_name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="标题" :label-width="formLabelWidth">
-          <el-input v-model="form.title" autocomplete="off"></el-input>
+          <el-input v-model="form.item.title" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="概括" :label-width="formLabelWidth">
-          <el-input v-model="form.content" autocomplete="off"></el-input>
+          <el-input v-model="form.item.content" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -23,15 +23,17 @@
 </template>
 <script>
 import { ref, reactive, watch } from '@vue/composition-api'
-import { AddInfo } from '@/api/news'
+import { AddInfo, GetList, EditInfo } from '@/api/news'
 export default {
-  props: ['flag','category'],
+  props: ['flag','category','id'],
   setup(props,{ root, emit }) {
     const dialogFlag = ref(false)
     const form = reactive({
-      category: '',
-      title: '',
-      content: ''    
+      item: {
+        category: '',
+        title: '',
+        content: '' 
+      }   
     })
     const categoryOption = reactive({
       item: []
@@ -49,21 +51,38 @@ export default {
     }
     //打开对话框之后
     const openDialog = () => {
+      console.log(props.id)
       categoryOption.item = props.category
+      let requestData = {
+        pageNumber: 1,
+        pageSize: 1,
+        id: props.id
+      }
+      GetList(requestData).then(res => {
+        let data = res.data.data.data[0]
+        form.item = {
+          category: data.categoryId,
+          title: data.title,
+          content: data.content
+        }
+      }).catch(err => {
+
+      })
     }
     //重置表单
     const resetForm = () => {
-      form.category = ''
-      form.title = ''
-      form.content = ''
+      form.item.category = ''
+      form.item.title = ''
+      form.item.content = ''
     }
     const submit = () => {
       let requestData = {
-        category: form.category,
-        title: form.title,
-        content: form.content
+        id: props.id,
+        categoryId: form.item.category,
+        title: form.item.title,
+        content: form.item.content
       }
-      if(!form.category) {
+      if(!form.item.category) {
         root.$message({
           message: '分类不能为空!',
           type: 'error'
@@ -71,12 +90,13 @@ export default {
         return
       }
       submitLoading.value = true
-      AddInfo(requestData).then(res => {
+      EditInfo(requestData).then(res => {
         root.$message({
           message: res.data.message,
           type: 'success'
         })
         submitLoading.value = false
+        emit("getListEmit")
         //重置表单
         resetForm()
       }).catch(err => {

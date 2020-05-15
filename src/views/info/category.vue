@@ -12,7 +12,7 @@
                 {{firstItem.category_name}}
                 <div class="button-group">
                   <el-button size="mini" round type="danger" @click="editCategory({ data: firstItem, type: 'category_first_edit' })">编辑</el-button>
-                  <el-button size="mini" round type="success">添加子级</el-button>
+                  <el-button size="mini" round type="success" @click="hanlerAddChildren({ data: firstItem, type: 'category_children_add' })">添加子级</el-button>
                   <el-button size="mini" round @click="deleteCategory(firstItem.id)">删除</el-button>
                 </div>
                 </h4>
@@ -48,11 +48,11 @@
 </template>
 <script>
 import { reactive, ref, onMounted, watch } from '@vue/composition-api'
-import { AddFristCategory, DeleteCategory, EditCategory } from '@/api/news'
+import { AddFristCategory, DeleteCategory, EditCategory, AddChildrenCategory } from '@/api/news'
 import { common } from '@/api/common'
 export default {
   setup(props, { root, refs }) {
-    const { getInfoCategory, categoryItem} = common()
+    const { getInfoCategory, categoryItem, getInfoCategoryAll } = common()
 
     const form = reactive({
       categoryName: '',
@@ -133,6 +133,26 @@ export default {
         }).catch(err => {
 
         })
+      }else if(button_type.value == 'category_children_add') {
+        if(!form.secCategoryName) {
+          root.$message({
+            message: '子级分类名称不能为空',
+            type: 'error'
+          })
+          return
+        }
+        let requestData = {
+          categoryName: form.secCategoryName,
+          parentId: category.current.id
+        }
+        AddChildrenCategory(requestData).then(res => {
+          root.$message({
+            message: res.data.message,
+            type: 'success'
+          })
+          getInfoCategoryAll()
+          form.secCategoryName = ''
+        }).catch(err => {})
       }
     }
     const addFirst = (data) => {
@@ -172,13 +192,25 @@ export default {
       //储存当前的数据对象
       category.current = data.data
     }
+    //添加子级
+    const hanlerAddChildren = (data) => {
+      //更新确定按钮的类型
+      button_type.value = data.type
+      category.current = data.data 
+      category_input2.value = false,
+      button_disabled.value = false,
+      category_input1.value = true,
+      category_sec.value = true
+      form.categoryName = data.data.category_name 
+    }
 
     /**
      * 生命周期 vue3.0语法
      * 挂载完成时执行,(页面dom元素完成时)
      */
     onMounted(() => {
-      getInfoCategory()
+      // getInfoCategory(),
+      getInfoCategoryAll()
     })
 
     return {
@@ -194,7 +226,8 @@ export default {
       category_input2,
       button_disabled,
       deleteCategory,
-      editCategory
+      editCategory,
+      hanlerAddChildren
     }
   }
 }

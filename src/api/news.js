@@ -10,12 +10,32 @@ export function AddFristCategory(data) {
   })
 }
 /**
+ * 子级分类添加
+ */
+export function AddChildrenCategory(data) {
+  return service.request({
+    method: "post",
+    url: "/news/addChildrenCategory/",
+    data
+  })
+}
+/**
  * 获取分类
  */
 export function GetCategory(data) {
   return service.request({
     method: "post",
     url: "/news/getCategory/",
+    data
+  })
+}
+/**
+ * 获取全部分类(包含子级)
+ */
+export function GetCategoryAll(data) {
+  return service.request({
+    method: "post",
+    url: "/news/getCategoryAll/",
     data
   })
 }
@@ -67,6 +87,16 @@ export function DeleteInfo(data) {
   return service.request({
     method: "post",
     url: "/news/deleteInfo/",
+    data
+  })
+}
+/**
+ * 编辑
+ */
+export function EditInfo(data) {
+  return service.request({
+    method: "post",
+    url: "/news/editInfo/",
     data
   })
 }

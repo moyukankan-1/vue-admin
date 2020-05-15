@@ -69,7 +69,7 @@
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)">删除</el-button>
-          <el-button type="success" size="mini" @click="dialogInfo = true">编辑</el-button>
+          <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,19 +92,23 @@
       </el-col>
     </el-row>
 
-    <!--弹窗-->
+    <!--新增弹窗-->
     <Dialog :flag.sync="dialogInfo" :category="options.category"/>
+    <!--编辑弹窗-->
+    <DialogEdit :flag.sync="dialogInfoEdit" :id="editId" :category="options.category" @getListEmit="getList"/>
   </div>
 </template>
 <script>
 import Dialog from '@/components/dialog/index.vue'
+import DialogEdit from '@/components/dialog/edit.vue'
 import { ref, reactive, onMounted, watch } from '@vue/composition-api'
 import { common } from '@/api/common'
 import { GetList, DeleteInfo } from '@/api/news'
 import { timestampToTime } from '@/utils/date'
 export default {
   components: {
-    Dialog
+    Dialog,
+    DialogEdit
   },
   setup(props,{ root }) {
         const { getInfoCategory, categoryItem } = common()
@@ -130,9 +134,11 @@ export default {
         const search = ref('id')
         const search_input = ref('')
         const dialogInfo = ref(false)
+        const dialogInfoEdit = ref(false)
         const total = ref(0)  //默认数量
         const loadingData = ref(false)
         const deleteInfoId = ref('')
+        const editId = ref('')
 
         const handleSizeChange = (val) => {
           page.pageSize = val
@@ -254,6 +260,11 @@ export default {
           let id = val.map(item => item.id)
           deleteInfoId.value = id
         }
+
+        const editInfo = (id) => {
+          editId.value = id
+          dialogInfoEdit.value = true
+        }
         return {
           handleSizeChange,
           handleCurrentChange,
@@ -269,11 +280,15 @@ export default {
           page,
           search_input,
           dialogInfo,
+          dialogInfoEdit,
           loadingData,
           toData,
           toCate,
+          getList,
           handleSelectionChange,
           grabble,
+          editInfo,
+          editId
         }
   }
 }
