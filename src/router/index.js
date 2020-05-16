@@ -60,7 +60,15 @@ Vue.use(VueRouter)
           path: '/infoCategory',
           component: () => import('../views/info/category.vue'),
           meta:{
-            name: '信息列表'
+            name: '信息分类'
+          }
+        },
+        {
+          path: '/infoDetailed',
+          component: () => import('../views/info/detailed.vue'),
+          hidden: true,
+          meta:{
+            name: '信息详情'
           }
         }
       ]
