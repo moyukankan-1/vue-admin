@@ -1,0 +1,37 @@
+.el-submenu .el-menu-item {
+  &.is-active{
+    background: rgba(245,108,108,0.2) !important;
+  }
+}
+li.el-submenu {
+  &.is-active.is-opened .el-submenu__title {
+    background: #f56c6c !important;
+  }
+}
+
+.close {
+  .el-submenu {
+    &.is-opened {
+      > .el-submenu__title {
+        background: #f56c6c !important;
+      }
+    }
+    
+  }
+}
+.el-menu--vertical {
+  .el-menu {
+    background: #f56c6c !important;
+  }
+  .el-menu-item { 
+    line-height: 56px;
+  }
+  .el-menu-item:hover {
+    background: #f56c6c !important;
+  }
+}
+
+/*table样式*/
+.el-table td, .el-table th {
+  text-align: center;
+}

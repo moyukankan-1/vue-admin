@@ -1,0 +1,26 @@
+//后台框架尺寸
+//菜单宽度
+$navMenu: 250px;
+$navMenuMin: 65px;
+$layoutHeader: 75px;
+
+@mixin webkit($type,$value) {
+  -webkit-#{$type}: $value;
+  -moz-#{$type}: $value;
+  -o-#{$type}: $value;
+  -ms-#{$type}: $value;
+  #{$type}: $value;
+}
+
+@mixin labelDom($align,$width,$line-height: "normal") {
+  label {
+    float: left;
+    line-height: $line-height + px;
+    width: $width + px;
+    text-align: $align;
+  }
+  .wrap-content {
+    margin-left: $width + px;
+  }
+}
+
