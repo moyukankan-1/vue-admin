@@ -254,6 +254,7 @@ export default {
           return timestampToTime(row.createDate)
         }
         //类型转化
+
         const toCate = (row, column, cellValue, index) => {
           let data = options.category.filter(item => item.id == row.categoryId)[0]
           return data.category_name

@@ -51,7 +51,6 @@ export default {
     }
     //打开对话框之后
     const openDialog = () => {
-      console.log(props.id)
       categoryOption.item = props.category
       let requestData = {
         pageNumber: 1,
