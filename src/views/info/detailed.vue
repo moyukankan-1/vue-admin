@@ -8,9 +8,6 @@
     <el-form-item label="新闻标题：">
       <el-input v-model="form.title"></el-input>
     </el-form-item>
-    <el-form-item label="缩略图：">
-      缩略图
-    </el-form-item>
     <el-form-item label="发布日期：">
       <el-date-picker
         v-model="form.date"
@@ -33,8 +30,6 @@ import { common } from '@/api/common'
 import { reactive, onMounted , watch } from '@vue/composition-api'
 import { GetList, EditInfo } from '@/api/news'
 import { timestampToTime } from '@/utils/date'
-
-
 import { quillEditor } from "vue-quill-editor" //调用编辑器
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
@@ -56,7 +51,7 @@ export default {
       categoryId: '',
       title: '',
       date: '',
-      content: ''
+      content: '',
     })
 
     const getInfo = () => {
@@ -107,8 +102,6 @@ export default {
       getInfoCategory(),
       getInfo()
     })
-       
-
     return {
       form,
       data,
@@ -118,4 +111,27 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.avatar-uploader .el-upload {
+  border: 1px dashed #000;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
