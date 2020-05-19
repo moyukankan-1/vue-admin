@@ -62,7 +62,7 @@
     <!--表格-->
     <el-table :data="tableData.item" border style="width: 100%" @selection-change="handleSelectionChange" v-loading="loadingData">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="title" label="标题" width="830"></el-table-column>
+      <el-table-column prop="title" label="标题" width="750"></el-table-column>
       <el-table-column prop="categoryId" label="类型" width="130" :formatter="toCate"></el-table-column>
       <el-table-column prop="createDate" label="日期" width="235" :formatter="toData"></el-table-column>
       <el-table-column prop="user" label="管理员" width="115"></el-table-column>
@@ -70,6 +70,9 @@
         <template slot-scope="scope">
           <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)">删除</el-button>
           <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑</el-button>
+          <router-link :to="{path: '/infoDetailed',query: {id: scope.row.id}}" style="margin-left: 10px">
+            <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑详情</el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -251,6 +254,7 @@ export default {
           return timestampToTime(row.createDate)
         }
         //类型转化
+
         const toCate = (row, column, cellValue, index) => {
           let data = options.category.filter(item => item.id == row.categoryId)[0]
           return data.category_name
