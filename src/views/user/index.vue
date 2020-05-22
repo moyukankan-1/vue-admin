@@ -25,11 +25,17 @@
         <el-button type='danger' class="pull-right">添加用户</el-button>
       </el-col>
     </el-row>
+    <div style="height: 30px"></div>
+    <table-vue :config='data.configTable'/>
   </div>
 </template>
 <script>
+import TableVue from '@/components/table/index.vue'
 import { reactive } from '@vue/composition-api'
 export default {
+  components: {
+    TableVue
+  },
   setup(props) {
     const data = reactive({
       selectValue: '',
@@ -37,7 +43,33 @@ export default {
         { value: 'name', label: '姓名'},
         { value: 'phone', label: '手机号'},
         { value: 'email', label: '邮箱'}
-      ]
+      ],
+      configTable: {
+        tHead:[
+          {
+            label: '邮箱/用户名',
+            field: 'email'
+          },
+          {
+            label: '真实姓名',
+            field: 'name'
+          },
+          {
+            label: '手机号',
+            field: 'phone'
+          },
+          {
+            label: '地区',
+            field: 'address'
+          },
+          {
+            label: '角色',
+            field: 'role'
+          }
+        ],
+        //翻页记录
+        recordCheckbox: true
+      }
     })
     return {
       data
