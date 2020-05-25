@@ -26,7 +26,19 @@
       </el-col>
     </el-row>
     <div style="height: 30px"></div>
-    <table-vue :config='data.configTable'/>
+    <table-vue :config='data.configTable'>
+      <template v-slot:status='slotData'>
+        <el-switch
+          v-model="slotData.data.name"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </template>
+      <template v-slot:operation='slotData'>
+        <el-button size="small" type="danger" @click="operation(slotData.data)">删除</el-button>
+        <el-button size="small" type="success">编辑</el-button>
+      </template>
+    </table-vue>
   </div>
 </template>
 <script>
@@ -65,14 +77,31 @@ export default {
           {
             label: '角色',
             field: 'role'
+          },
+          {
+            label: '禁启用状态',
+            field: 'status',
+            columnType: 'slot',
+            slotName: 'status'
+          },
+          {
+            label: '操作',
+            columnType: 'slot',
+            slotName: 'operation'
           }
         ],
         //翻页记录
         recordCheckbox: true
       }
     })
+
+    const operation = (params) => {
+      console.log(params)
+    }
+    
     return {
-      data
+      data,
+      operation
     }
   }
 }
