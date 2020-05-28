@@ -99,4 +99,13 @@ export function EditInfo(data) {
     url: "/news/editInfo/",
     data
   })
+}/**
+ * 获取省市区关联
+ */
+export function GetCityPicker(data) {
+  return service.request({
+    method: "post",
+    url: "/cityPicker/",
+    data
+  })
 }

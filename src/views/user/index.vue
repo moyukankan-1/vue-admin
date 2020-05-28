@@ -22,7 +22,7 @@
         </div>
       </el-col>
       <el-col :span='4'>
-        <el-button type='danger' class="pull-right">添加用户</el-button>
+        <el-button type='danger' class="pull-right" @click="data.dialogAdd = true">添加用户</el-button>
       </el-col>
     </el-row>
     <div style="height: 30px"></div>
@@ -39,14 +39,17 @@
         <el-button size="small" type="success">编辑</el-button>
       </template>
     </table-vue>
+    <Dialog :flag.sync="data.dialogAdd"/>
   </div>
 </template>
 <script>
 import TableVue from '@/components/table/index.vue'
-import { reactive } from '@vue/composition-api'
+import Dialog from '@/components/dialog/add.vue'
+import { reactive, ref } from '@vue/composition-api'
 export default {
   components: {
-    TableVue
+    TableVue,
+    Dialog
   },
   setup(props) {
     const data = reactive({
@@ -91,8 +94,11 @@ export default {
           }
         ],
         //翻页记录
-        recordCheckbox: true
-      }
+        recordCheckbox: true,
+        //请求接口url
+        requestUrl: '/news/getList/'
+      },
+      dialogAdd: false
     })
 
     const operation = (params) => {

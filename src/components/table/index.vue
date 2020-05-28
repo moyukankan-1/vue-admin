@@ -31,12 +31,30 @@ export default {
       tableConfig: {
         tHead: [],
         //翻页记录
-        recordCheckbox: false
+        recordCheckbox: false,
+        requestUrl: ''
       }
     })
 
+    let loadData = () => {
+      console.log(data.tableConfig.requestUrl)
+    }
+
+    /**
+     * 初始化table配置项
+     */
+    let initTableConfig = () => {
+      let keys = Object.keys(data.tableConfig)
+      for(let key in props.config) {
+        if(keys.includes(key)) {
+          data.tableConfig[key] = props.config[key]
+        }
+      }
+    }
+
     onBeforeMount(() => {
-      data.tableConfig.tHead = props.config.tHead
+      initTableConfig()
+      loadData()
     })
 
     return {
