@@ -43,37 +43,48 @@ export default {
      * 获取省份
      */
     const getProvince = () => {
-      GetCityPicker({type: 'province'}).then(res => {
-        data.provinceData = res.data.data.data
-      })
+      getData({type: 'province'})
     }
     /**
      * 选择省份，获取城市
      */
     const handlerProvince = (val) => {
-      data.cityValue = ''
-      data.areaValue = ''  
-      data.streetValue = ''
-      GetCityPicker({type: 'city', province_code: val}).then(res => {
-        data.cityData = res.data.data.data
-      })
+      resetValue({type: 'city'})
+      getData({type: 'city', province_code: val})
     }
     /**
      * 选择城市，获取区县
      */
     const handlerCity = (val) => {
-      data.areaValue = ''
-      GetCityPicker({type: 'area', city_code: val}).then(res => {
-        data.areaData = res.data.data.data
-      })
+      resetValue({type: 'area'})
+      getData({type: 'area', city_code: val})
     }
     /**
      * 选择区县，获取街道
      */
     const handlerArea = (val) => {
-      data.streetValue = ''
-      GetCityPicker({type: 'street', area_code: val}).then(res => {
-        data.streetData = res.data.data.data
+      resetValue({type: 'street'})
+      getData({type: 'street', area_code: val})
+    }
+    /**
+     * 获取数据
+     */
+     const getData = (requestData) => {
+       GetCityPicker(requestData).then(res => {
+         data[`${requestData.type}Data`] = res.data.data.data
+       })
+     }
+    /**
+     * 重置选项
+     */
+    const resetValue = (params) => {
+      const valueJson = {
+        city: ['cityValue','areaValue','streetValue'],
+        area: ['areaValue','streetValue'],
+        street: ['streetValue'],
+      }
+      valueJson[params.type].forEach(item => {
+        data[item] = ''
       })
     }
 

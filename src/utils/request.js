@@ -1,3 +1,4 @@
+//在request.js中引入axios
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { getToken, getUsername} from './app'
@@ -11,17 +12,13 @@ const service = axios.create({
 
 // 添加一个请求拦截器
 service.interceptors.request.use(function (config) {
-  // Do something before request is sent
-
   /**
    * 添加请求头
    */
   config.headers['Tokey'] = getToken()
   config.headers['Username'] = getUsername()
-  
   return config;
 }, function (error) {
-  // Do something with request error
   return Promise.reject(error);
 })
 
@@ -36,7 +33,6 @@ service.interceptors.response.use(function (response) {
     return Promise.reject(data);
   }else{
     return response;
-    // return Promise.resolve(data);
   }
 
 }, function (error) {
@@ -46,3 +42,5 @@ service.interceptors.response.use(function (response) {
 
 
 export default service
+
+
