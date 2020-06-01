@@ -16,7 +16,7 @@ service.interceptors.request.use(function (config) {
    * 添加请求头
    */
   config.headers['Tokey'] = getToken()
-  config.headers['Username'] = getUsername()
+  config.headers['UserName'] = getUsername()
   return config;
 }, function (error) {
   return Promise.reject(error);
@@ -34,7 +34,6 @@ service.interceptors.response.use(function (response) {
   }else{
     return response;
   }
-
 }, function (error) {
   // 对响应错误做点什么
   return Promise.reject(error);

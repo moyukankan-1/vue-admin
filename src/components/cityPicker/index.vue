@@ -2,22 +2,22 @@
   <div style="overflow: hidden">
     <el-row :gutter="10">
       <el-col :span="6">
-        <el-select v-model="data.provinceValue" @change="handlerProvince">
+        <el-select v-model="form.provinceValue" @change="handlerProvince">
           <el-option v-for="item in data.provinceData" :key="item.PROVINCE_ID" :value="item.PROVINCE_CODE" :label="item.PROVINCE_NAME"></el-option>
         </el-select>
       </el-col>
       <el-col :span="6">
-        <el-select v-model="data.cityValue" @change="handlerCity">
+        <el-select v-model="form.cityValue" @change="handlerCity">
           <el-option v-for="item in data.cityData" :key="item.CITY_ID" :value="item.CITY_CODE" :label="item.CITY_NAME"></el-option>
         </el-select>
       </el-col>
       <el-col :span="6">
-        <el-select v-model="data.areaValue" @change="handlerArea">
+        <el-select v-model="form.areaValue" @change="handlerArea">
           <el-option v-for="item in data.areaData" :key="item.AREA_ID" :value="item.AREA_CODE" :label="item.AREA_NAME"></el-option>
         </el-select>
       </el-col>
       <el-col :span="6">
-        <el-select v-model="data.streetValue">
+        <el-select v-model="form.streetValue">
           <el-option v-for="item in data.streetData" :key="item.STREET_ID" :value="item.STREET_CODE" :label="item.STREET_NAME"></el-option>
         </el-select>
       </el-col>
@@ -26,18 +26,20 @@
 </template>
 <script>
 import { GetCityPicker } from '@/api/news'
-import { onMounted, reactive } from '@vue/composition-api'
+import { onMounted, reactive, watch } from '@vue/composition-api'
 export default {
-  setup(props) {
+  setup(props,{ emit }) {
     const data = reactive({
-      provinceValue: '',
-      cityValue: '',
-      areaValue: '',
-      streetValue: '',
       provinceData: [],
       cityData: [],
       areaData: [],
       streetData: []
+    })
+    const form = reactive({
+      provinceValue: '',
+      cityValue: '',
+      areaValue: '',
+      streetValue: '',
     })
     /**
      * 获取省份
@@ -74,6 +76,15 @@ export default {
          data[`${requestData.type}Data`] = res.data.data.data
        })
      }
+     watch([
+       () => form.provinceValue,
+       () => form.cityValue,
+       () => form.areaValue,
+       () => form.streetValue,
+     ],([province,city,area,street]) => {
+       emit('update:cityPickerData',form)
+     }
+     )
     /**
      * 重置选项
      */
@@ -99,7 +110,8 @@ export default {
       data,
       handlerProvince,
       handlerCity,
-      handlerArea
+      handlerArea,
+      form
     }
   }
 }

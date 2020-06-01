@@ -3,23 +3,26 @@
     <el-dialog title="新增" :visible.sync="dialogFlag" center :modal-append-to-body='false' @close="close" width="650px" @opened="openDialog">
       <el-form :model="form" ref="addInform">
         <el-form-item label="用户名：" :label-width="formLabelWidth">
-          <el-input></el-input>
+          <el-input v-model="form.username" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" :label-width="formLabelWidth">
+          <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item label="姓名：" :label-width="formLabelWidth">
-          <el-input></el-input>
+          <el-input v-model="form.truename" placeholder="请输入姓名"></el-input>
         </el-form-item>
         <el-form-item label="手机号：" :label-width="formLabelWidth">
-          <el-input></el-input>
+          <el-input v-model.number="form.phone" placeholder="请输入手机号"></el-input>
         </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
-          <city-picker />
+          <city-picker :cityPickerData.sync="form.region"/>
         </el-form-item>
         <el-form-item label="是否启用：" :label-width="formLabelWidth">
-          <el-radio v-model="roleStatus" label="1">禁用</el-radio>
-          <el-radio v-model="roleStatus" label="2">启用</el-radio>
+          <el-radio v-model="form.roleStatus" label="1">禁用</el-radio>
+          <el-radio v-model="form.roleStatus" label="2">启用</el-radio>
         </el-form-item>
         <el-form-item label="角色：" :label-width="formLabelWidth">
-          <el-checkbox-group v-model="roleCode">
+          <el-checkbox-group v-model="form.role">
             <el-checkbox v-for="item in roleItem.item" :key="item.role" :label="item.role">{{item.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
@@ -32,8 +35,9 @@
   </div>
 </template>
 <script>
+import sha1 from 'js-sha1'
 import { ref, reactive, watch, onMounted } from '@vue/composition-api'
-import { AddInfo, GetRole } from '@/api/news'
+import { GetRole, UserAdd } from '@/api/news'
 import cityPicker from '@/components/cityPicker/index.vue'
 export default {
   props: ['flag','category'],
@@ -43,23 +47,19 @@ export default {
   setup(props,{ root, emit }) {
     const dialogFlag = ref(false)
     const form = reactive({
-      category: '',
-      title: '',
-      content: ''    
+      username: '',
+      truename: '',
+      password: '',
+      phone: '',
+      region: {},
+      roleStatus: '1',
+      role: []
     })
-    //是否启用状态
-    const roleStatus = ref('1')
-    //角色
-    const roleCode  = reactive([
-      'A','B'
-    ])
+    const formLabelWidth = ref('90px')
     const roleItem = reactive({
       item: []
     })
-    const categoryOption = reactive({
-      item: []
-    })
-    const formLabelWidth= ref('90px')
+    
 
     const submitLoading = ref(false)
 
@@ -72,7 +72,6 @@ export default {
     }
     //打开对话框之后
     const openDialog = () => {
-      categoryOption.item = props.category
       //打开请求角色接口
       getRole()
     }
@@ -83,29 +82,36 @@ export default {
       form.content = ''
     }
     const submit = () => {
-      let requestData = {
-        category: form.category,
-        title: form.title,
-        content: form.content
-      }
-      if(!form.category) {
+      if(!form.username) {
         root.$message({
-          message: '分类不能为空!',
+          message: '用户名不能为空!',
           type: 'error'
         })
         return
       }
-      submitLoading.value = true
-      AddInfo(requestData).then(res => {
+      if(!form.password) {
         root.$message({
-          message: res.data.message,
-          type: 'success'
+          message: '密码不能为空!',
+          type: 'error'
         })
-        submitLoading.value = false
-        //重置表单
+        return
+      }
+      if(form.role.length == 0) {
+        root.$message({
+          message: '请选择角色类型!',
+          type: 'error'
+        })
+        return
+      }
+      
+      let requestData = Object.assign({},form)
+      requestData.role = requestData.role.join()
+      requestData.region = JSON.stringify(form.region)
+      requestData.password = sha1(requestData.password)
+      console.log(requestData)
+      UserAdd(requestData).then(res => {
+        console.log(res)
         resetForm()
-      }).catch(err => {
-        submitLoading.value = false
       })
     }
 
@@ -122,12 +128,9 @@ export default {
       submitLoading,
       close,
       form,
-      categoryOption,
       formLabelWidth,
       openDialog,
       submit,
-      roleStatus,
-      roleCode,
       roleItem
     }
   }

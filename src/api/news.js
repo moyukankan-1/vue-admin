@@ -111,12 +111,22 @@ export function GetCityPicker(data) {
   })
 }
 /**
- * 列表
+ * 角色列表
  */
 export function GetRole(data = {}) {
   return service.request({
     method: "post",
     url: "/role/",
     data
+  })
+}
+/**
+ * 添加
+ */
+export function UserAdd(data = {}){
+  return service.request({
+      method: "post",
+      url: "/user/add/",
+      data
   })
 }
