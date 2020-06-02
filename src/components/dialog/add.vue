@@ -108,9 +108,11 @@ export default {
       requestData.role = requestData.role.join()
       requestData.region = JSON.stringify(form.region)
       requestData.password = sha1(requestData.password)
-      console.log(requestData)
       UserAdd(requestData).then(res => {
-        console.log(res)
+        root.$message({
+          message: data.message,
+          type: 'success'
+        })
         resetForm()
       })
     }

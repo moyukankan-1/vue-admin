@@ -26,7 +26,7 @@
       </el-col>
     </el-row>
     <div style="height: 30px"></div>
-    <table-vue :config='data.configTable'>
+    <table-vue :config='data.configTable' :tableRow.sync="data.tableRow" ref="userTable">
       <template v-slot:status='slotData'>
         <el-switch
           v-model="slotData.data.name"
@@ -35,8 +35,11 @@
         </el-switch>
       </template>
       <template v-slot:operation='slotData'>
-        <el-button size="small" type="danger" @click="operation(slotData.data)">删除</el-button>
+        <el-button size="small" type="danger" @click="handlerDel(slotData.data)">删除</el-button>
         <el-button size="small" type="success">编辑</el-button>
+      </template>
+      <template v-slot:tableFooterLeft>
+        <el-button size="small" @click="batchDel">批量删除</el-button>
       </template>
     </table-vue>
     <Dialog :flag.sync="data.dialogAdd"/>
@@ -46,12 +49,13 @@
 import TableVue from '@/components/table/index.vue'
 import Dialog from '@/components/dialog/add.vue'
 import { reactive, ref } from '@vue/composition-api'
+import { UserDel } from '@/api/news'
 export default {
   components: {
     TableVue,
     Dialog
   },
-  setup(props) {
+  setup(props, { root, refs }) {
     const data = reactive({
       selectValue: '',
       option: [
@@ -63,11 +67,11 @@ export default {
         tHead:[
           {
             label: '邮箱/用户名',
-            field: 'email'
+            field: 'username'
           },
           {
             label: '真实姓名',
-            field: 'name'
+            field: 'truename'
           },
           {
             label: '手机号',
@@ -75,7 +79,7 @@ export default {
           },
           {
             label: '地区',
-            field: 'address'
+            field: 'region'
           },
           {
             label: '角色',
@@ -98,16 +102,51 @@ export default {
         //请求接口url
         requestUrl: '/news/getList/'
       },
-      dialogAdd: false
+      dialogAdd: false,
+      tableRow: {}
     })
-
-    const operation = (params) => {
-      console.log(params)
+    //单点删除
+    const handlerDel = (params) => {
+      root.confirm({
+        content: '确认删除当前信息，确认后将无法恢复！',
+        type: '警告',
+        fn: confirmDelete
+      })
+      data.tableRow.idItem = [params.id]
+      userDel()
+    }
+    //批量删除
+    const batchDel = () => {
+      let userId = data.tableRow.idItem
+      if(!userId || userId.length == 0) {
+        root.$message({
+          message: '请勾选想要删除的用户!',
+          type: 'error'
+        })
+        return 
+      }
+      root.confirm({
+        content: '确认删除当前信息，确认后将无法恢复！',
+        type: '警告',
+        fn: confirmDelete
+      })
+      userDel()
+    }
+    //删除用户
+    const userDel = () => {
+      UserDel({id: data.tableRow.idItem}).then(res => {
+      }).catch(err => {})
+    }
+    //刷新数据
+    const confirmDelete = () => {
+      //刷新数据
+      refs.userTable.getUserList()
     }
     
     return {
       data,
-      operation
+      handlerDel,
+      batchDel
     }
   }
 }

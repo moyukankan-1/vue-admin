@@ -125,8 +125,28 @@ export function GetRole(data = {}) {
  */
 export function UserAdd(data = {}){
   return service.request({
-      method: "post",
-      url: "/user/add/",
-      data
+    method: "post",
+    url: "/user/add/",
+    data
+  })
+}
+/**
+ * 用户列表
+ */
+export function GetUserList(data){
+  return service.request({
+    method: "post",
+    url: "/user/getList/",
+    data
+  })
+}
+/**
+ * 删除
+ */
+export function UserDel(data = {}){
+  return service.request({
+    method: "post",
+    url: "/user/delete/",
+    data
   })
 }
