@@ -102,14 +102,6 @@ export default {
           callback();
         }
       }
-    //这里放置data数据，生命周期，自定义函数
-    // context.attrs == this.$attrs
-    // context.emit == this.$emit
-    // context.listeners = this.$listeners
-    // context.parent == this.$parent
-    // context.refs = this.$refs
-    // context.root  == this
-  
 
     //遇到声明类型为对象类型的时候，用reactive
     const menuTab = reactive([{txt: "登录",current: true,type:'login'},{txt: "注册",current: false,type:'register'}])

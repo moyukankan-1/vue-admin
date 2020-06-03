@@ -7,15 +7,15 @@
           <div class="warp-content">
             <el-row :gutter="20">
               <el-col :span="3">
-                <el-select v-model="data.selectValue">
+                <el-select v-model="data.selectValue" @change="select">
                   <el-option v-for="item in data.option" :key="item.value" :value="item.value" :label="item.label"></el-option>
                 </el-select>
               </el-col>
               <el-col :span='4'>
-                <el-input placeholder="请输入内容"></el-input>
+                <el-input placeholder="请输入内容" v-model="data.key_word"></el-input>
               </el-col>
               <el-col :span="15">
-                <el-button type="danger">搜索</el-button>
+                <el-button type="danger" @click="search">搜索</el-button>
               </el-col>
             </el-row>
           </div>
@@ -29,27 +29,30 @@
     <table-vue :config='data.configTable' :tableRow.sync="data.tableRow" ref="userTable">
       <template v-slot:status='slotData'>
         <el-switch
-          v-model="slotData.data.name"
+          @change="handleSwitch(slotData.slotData)"
+          v-model="slotData.slotData.status"
           active-color="#13ce66"
-          inactive-color="#ff4949">
+          inactive-color="#ff4949"
+          active-value="2"
+          inactive-value="1">
         </el-switch>
       </template>
       <template v-slot:operation='slotData'>
         <el-button size="small" type="danger" @click="handlerDel(slotData.data)">删除</el-button>
-        <el-button size="small" type="success">编辑</el-button>
+        <el-button size="small" type="success" @click="handleEdit(slotData.slotData)">编辑</el-button>
       </template>
       <template v-slot:tableFooterLeft>
         <el-button size="small" @click="batchDel">批量删除</el-button>
       </template>
     </table-vue>
-    <Dialog :flag.sync="data.dialogAdd"/>
+    <Dialog :flag.sync="data.dialogAdd" :editData="data.editData" @refreshData='refreshData'/>
   </div>
 </template>
 <script>
 import TableVue from '@/components/table/index.vue'
 import Dialog from '@/components/dialog/add.vue'
 import { reactive, ref } from '@vue/composition-api'
-import { UserDel } from '@/api/news'
+import { UserDel, UserActives } from '@/api/news'
 export default {
   components: {
     TableVue,
@@ -60,8 +63,7 @@ export default {
       selectValue: '',
       option: [
         { value: 'name', label: '姓名'},
-        { value: 'phone', label: '手机号'},
-        { value: 'email', label: '邮箱'}
+        { value: 'phone', label: '手机号'}
       ],
       configTable: {
         tHead:[
@@ -103,7 +105,12 @@ export default {
         requestUrl: '/news/getList/'
       },
       dialogAdd: false,
-      tableRow: {}
+      tableRow: {},
+      timer: null,
+      editData: {},
+      selectData: {},
+      //搜索关键字  
+      key_word: ''
     })
     //单点删除
     const handlerDel = (params) => {
@@ -142,11 +149,55 @@ export default {
       //刷新数据
       refs.userTable.getUserList()
     }
+    const refreshData = () => {
+      confirmDelete()
+    }
+
+    const handleSwitch = (params) => {
+      let requestData = {
+        id: params.id,
+        status: params.status
+      }
+      if(data.timer) {
+        clearTimeout(data.timer)
+      }
+      data.timer = setTimeout(() => {
+        UserActives(requestData).then(res => {
+          root.$message({
+            message: res.data.message,
+            type: 'success'
+          })
+        }).catch(err => {})
+      },300)
+    }
+
+    //编辑
+    const handleEdit = (params) => {
+      data.dialogAdd = true
+      data.editData = Object.assign({}, params)
+    }
+    //选择触发
+    const select = (val) => {
+      data.selectData = data.option.filter(item => item.value == val)[0]
+    }
+
+    //搜索触发
+    const search = () => {
+      let loadData = {
+        [data.selectData.value]: data.key_word
+      }
+      refs.userTable.paramsLoadDta(loadData)
+    }
     
     return {
       data,
       handlerDel,
-      batchDel
+      batchDel,
+      refreshData,
+      handleSwitch,
+      handleEdit,
+      select,
+      search
     }
   }
 }

@@ -6,7 +6,7 @@
         <!-- v-slot -->
         <el-table-column :key="item.id" :prop="item.field" :label="item.label" v-if="item.columnType == 'slot'">
           <template slot-scope='scope'>
-            <slot :name="item.slotName" :data='scope.row'></slot>
+            <slot :name="item.slotName" :slotData='scope.row'></slot>
           </template>
         </el-table-column>
         <!--文本渲染-->
@@ -87,6 +87,19 @@ export default {
     const handleSizeChange = () => {}
     const handleCurrentChange = () => {}
 
+    //带参数的数据
+    const paramsLoadDta = (params) => {
+      let requestData = Object.assign({}, params, {
+        pageNumber: 1,
+        pageSize: 10
+      })
+      GetUserList(requestData).then(res => {
+        console.log(res)
+        data.tableData = res.data.data.data
+        total.value = res.data.data.total
+      })
+    }
+
     onBeforeMount(() => {
       initTableConfig()
       loadData(),
@@ -99,7 +112,8 @@ export default {
       getUserList,
       total,
       handleSizeChange,
-      handleCurrentChange
+      handleCurrentChange,
+      paramsLoadDta
     }
   }
 }

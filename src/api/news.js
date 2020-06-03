@@ -143,10 +143,30 @@ export function GetUserList(data){
 /**
  * 删除
  */
-export function UserDel(data = {}){
+export function UserDel(data){
   return service.request({
     method: "post",
     url: "/user/delete/",
+    data
+  })
+}
+/**
+ * 禁用启用
+ */
+export function UserActives(data){
+  return service.request({
+    method: "post",
+    url: "/user/actives/",
+    data
+  })
+}
+/**
+ * 编辑
+ */
+export function UserEdit(data){
+  return service.request({
+    method: "post",
+    url: "/user/edit/",
     data
   })
 }
