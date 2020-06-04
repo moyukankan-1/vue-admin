@@ -12,10 +12,6 @@ export default {
           params.fn()
         }
       }).catch(() => {
-        // root.$message({
-        //   type: 'info',
-        //   message: '已取消删除'
-        // })          
       })
     }
   }

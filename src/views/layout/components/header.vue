@@ -5,7 +5,7 @@
       <div class="user-info">
         {{username}}
       </div>
-      <svg-icon class="header-icon" iconClass="out" className="out"></svg-icon>
+      <svg-icon class="header-icon" iconClass="out" className="out" @click.native="out"></svg-icon>
     </div>
   </div>
 </template>
@@ -17,9 +17,14 @@ export default {
     const navMenuState = () => {
       root.$store.commit('SET_COLLAPSE') 
     }
+    //退出
+    const out = () => {
+      root.$router.push('/login')
+    }
     return {
       navMenuState,
-      username
+      username,
+      out
     }
   }
 }
@@ -36,6 +41,9 @@ export default {
   background: #fff;
   @include webkit(box-shadow, 0 3px 16px 0 rgba(0,0,0,.1));
   @include webkit(transition, all .5s);
+  .user-info {
+    float: left;
+  }
 }
 .open {
   #header-wrap {

@@ -71,7 +71,7 @@
           <el-button type="danger" size="mini" @click="deleteItem(scope.row.id)">删除</el-button>
           <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑</el-button>
           <router-link :to="{path: '/infoDetailed',query: {id: scope.row.id}}" style="margin-left: 10px">
-            <el-button type="success" size="mini" @click="editInfo(scope.row.id)">编辑详情</el-button>
+            <el-button type="success" size="mini">编辑详情</el-button>
           </router-link>
         </template>
       </el-table-column>
@@ -172,6 +172,7 @@ export default {
           }
           root.confirm({
             content: '删除全部，是否继续？',
+            type: '警告',
             fn: confirmDelete
           })
         }
@@ -256,7 +257,7 @@ export default {
         //类型转化
 
         const toCate = (row, column, cellValue, index) => {
-          let data = options.category.filter(item => item.id == row.categoryId)[0]
+          let data = options.category.filter(item => item.id == cellValue)[0]
           return data.category_name
         }
 

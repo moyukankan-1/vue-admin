@@ -20,8 +20,8 @@
                 <li v-for="childrenItem in firstItem.children" :key="childrenItem.id">
                   {{childrenItem.category_name}}
                   <div class="button-group">
-                    <el-button size="mini" round type="danger">编辑</el-button>
-                    <el-button size="mini" round>删除</el-button>
+                    <el-button size="mini" round type="danger" @click="editCategory({ data: childrenItem, type: 'category_children_edit' })">编辑</el-button>
+                    <el-button size="mini" round @click="deleteCategory(childrenItem.id)">删除</el-button>
                   </div>
                 </li>
               </ul>
@@ -124,8 +124,6 @@ export default {
             type: 'success'
           })
           category.current.category_name = res.data.data.data.categoryName
-          // let data = category.item.filter(item => item.id == category.current.id)
-          // data[0].category_name = res.data.data.data.categoryName
 
           //清空输入框
           form.categoryName = ''
@@ -153,6 +151,31 @@ export default {
           getInfoCategoryAll()
           form.secCategoryName = ''
         }).catch(err => {})
+      }else {
+        if(category.current.length == 0) {
+          root.$message({
+            message: '未选择分类!',
+            type: 'error'
+          })
+          return
+        }
+        let requestData = reactive({
+          id: category.current.id,
+          categoryName: form.secCategoryName
+        })
+        EditCategory(requestData).then(res => {
+          root.$message({
+            message: res.data.message,
+            type: 'success'
+          })
+          category.current.category_name = res.data.data.data.categoryName
+
+          //清空输入框
+          form.categoryName = ''
+          category.current = []
+        }).catch(err => {
+
+        })
       }
     }
     const addFirst = (data) => {
@@ -172,36 +195,47 @@ export default {
     const deleteCategory = (categoryId) => {
       deleteId.value = categoryId
       root.confirm({
-            content: '是否删除？',
-            fn: confirmDelete
-          })
+        content: '是否删除？',
+        fn: confirmDelete
+      })
     }
     const confirmDelete = () => {
       DeleteCategory({categoryId: deleteId.value}).then(res => {
-        let index = category.item.findIndex(item => item.id == deleteId.value)
-        category.item.splice(index, 1)
+        root.$message({
+          message: res.data.message,
+          type: 'success'
+        })
+        getInfoCategoryAll()
       }).catch(err => {})
     }
     //编辑按钮
     const editCategory = (data) => {
       button_type.value = data.type
-      category_sec.value = false
-      category_input1.value = false
       button_disabled.value = false
-      form.categoryName = data.data.category_name
       //储存当前的数据对象
       category.current = data.data
+      if(data.type == 'category_first_edit') {
+        category_sec.value = false
+        category_input1.value = false
+        form.categoryName = data.data.category_name
+      }else {
+        //更新确定按钮的类型
+        category_input2.value = false,
+        category_input1.value = true,
+        category_sec.value = true
+        form.secCategoryName = data.data.category_name
+      }
     }
     //添加子级
     const hanlerAddChildren = (data) => {
       //更新确定按钮的类型
       button_type.value = data.type
-      category.current = data.data 
+      category.current = data.data
+      button_disabled.value = false
       category_input2.value = false,
-      button_disabled.value = false,
       category_input1.value = true,
       category_sec.value = true
-      form.categoryName = data.data.category_name 
+      form.categoryName = data.data.category_name
     }
 
     /**

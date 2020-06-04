@@ -23,10 +23,8 @@ export default {
     const routers = reactive(root.$router.options.routes)
     
     const handleOpen = (key, keyPath) => {
-      console.log(key, keyPath)
     }
     const handleClose = (key, keyPath) => {
-      console.log(key, keyPath)
     }
 
     return {

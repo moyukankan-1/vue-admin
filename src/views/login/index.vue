@@ -103,9 +103,7 @@ export default {
         }
       }
 
-    //遇到声明类型为对象类型的时候，用reactive
     const menuTab = reactive([{txt: "登录",current: true,type:'login'},{txt: "注册",current: false,type:'register'}])
-    //遇到声明类型为基本类型的时候，用ref
     const model = ref('login')
     //登录按钮禁用状态
     const loginButtonStatus = ref(true)
@@ -147,7 +145,8 @@ export default {
      * 声明函数
      * 切换模块
      */
-    const toggleMenu = (data => {
+    const toggleMenu = (data) => {
+
       menuTab.forEach(element => {
         element.current = false
       });
@@ -157,7 +156,7 @@ export default {
       //重置表单
       refs.loginForm.resetFields()
       clearCountDown()
-    }) 
+    }
     /**
      * 更新按钮状态
      */
@@ -224,9 +223,9 @@ export default {
      */
     const clearCountDown = (() => {
       updataButtonStatus({
-            status: false,
-            text: '获取验证码'
-          })
+        status: false,
+        text: '获取验证码'
+      })
       clearInterval(timer.value)
     })
     /*
@@ -241,7 +240,6 @@ export default {
             register()
           }
         } else {
-          console.log('error submit!!');
           return false;
         }
       })

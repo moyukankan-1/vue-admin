@@ -17,9 +17,9 @@ service.interceptors.request.use(function (config) {
    */
   config.headers['Tokey'] = getToken()
   config.headers['UserName'] = getUsername()
-  return config;
+  return config
 }, function (error) {
-  return Promise.reject(error);
+  return Promise.reject(error)
 })
 
 // 添加一个响应拦截器

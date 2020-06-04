@@ -30,4 +30,9 @@ export default {
   fill: currentColor;
   color: #fff;
 }
+.out {
+  color: #000;
+  font-size: 20px;
+  margin-top: 28px;
+}
 </style>
