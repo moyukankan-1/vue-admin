@@ -35,6 +35,7 @@
           <el-button type="danger" @click="submitForm('loginForm')" class="login-btn block" :disabled="loginButtonStatus">{{model == "login"? '登录': '注册'}}</el-button>
         </el-form-item>
       </el-form>
+      <div style="color: #fff">如果验证码显示太快您没有看清的话，请打开控制台查看（键盘按键F12或者鼠标右键检查打开控制台，然后点击Console进行查看验证码）</div>
     </div>
   </div>
 </template>
@@ -185,11 +186,12 @@ export default {
         text: '已发送'
       })
       //请求接口
-      GetSms({username: ruleForm.username, module: model.value}).then(response => {
+      GetSms({username: ruleForm.username, module: model.value}).then(res => {
         root.$message({
-          message: response.data.message,
+          message: res.data.message,
           type: 'success'
         })
+        console.log(res.data.message)
         loginButtonStatus.value = false
         countDown(60)
       }).catch(error => {
