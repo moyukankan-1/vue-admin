@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-2d0c0dbd"],{4429:function(n,e,t){"use strict";t.r(e);var c=function(){var n=this,e=n.$createElement,t=n._self._c||e;return t("div",[n._v(" 控制台首页 ")])},u=[],r={},s=r,a=t("2877"),d=Object(a["a"])(s,c,u,!1,null,"13f584f8",null);e["default"]=d.exports}}]);

@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 import { getToken, getUsername} from './app'
 
+const BASEURL = process.env.NODE_ENV === 'production' ? '' : '/devApi';
 const service = axios.create({
     baseURL: BASEURL,  // http://192.120.0.106:8080/devApi/  == http://www.web-jshtml.cn/productapi/productapi
     timeout: 10000,   // 超时
